@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using ProductManagementMVC.Interfaces;
 using ProductManagementMVC.Entities;
 using ProductManagementMVC.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProductManagementMVC.Controllers
 {
@@ -15,10 +17,39 @@ namespace ProductManagementMVC.Controllers
             _categoryService = categoryService;
         }
 
-        public IActionResult AllCategories()
+        //public IActionResult AllCategories(string currentFilter, string searchString)
+        //{
+        //    IEnumerable<Category> categories = _categoryService.GetCategories(searchString);
+        //    return View(categories);
+        //}
+        public IActionResult AllCategories(string currentFilter, string searchString, int pageNumber = 1, int pageSize = 5)
         {
-            IEnumerable<Category> categories = _categoryService.GetCategories();
-            return View(categories);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            // სერვისიდან მონაცემების წამოღება
+            var categories = _categoryService.GetCategories(searchString);
+
+            var totalCount = categories.Count();
+
+            var items = categories
+                .OrderBy(c => c.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            ViewBag.CurrentPage = pageNumber;
+
+            return View(items);
         }
 
         // GET
@@ -29,6 +60,7 @@ namespace ProductManagementMVC.Controllers
 
         // POST
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(CategoryModel category)
         {
             CreateCategoryResponse createCategoryResponse = new CreateCategoryResponse();
@@ -56,6 +88,7 @@ namespace ProductManagementMVC.Controllers
 
         // POST
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeletePOST(int? id)
         {
             var getCategoryResponse =  _categoryService.GetCategory(new GetCategoryRequest() { Id = (int)id });
@@ -73,16 +106,17 @@ namespace ProductManagementMVC.Controllers
             {
                 return NotFound();
             }
-            var deleteCategoryResponse = _categoryService.GetCategory(new GetCategoryRequest() { Id = (int)id });
-            if (deleteCategoryResponse == null)
+            var updateCategoryResponse = _categoryService.GetCategory(new GetCategoryRequest() { Id = (int)id });
+            if (updateCategoryResponse == null)
             {
                 return NotFound();
             }
-            return View(deleteCategoryResponse.Category);
+            return View(updateCategoryResponse.Category);
         }
 
         // POST
         [HttpPost, ActionName("Edit")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(CategoryModel category)
         {
             if (ModelState.IsValid)

@@ -74,9 +74,9 @@ namespace ProductManagementMVC.Services
 
             return new DeleteCategoryResponse();
         }
-        public IEnumerable<Category> GetCategories()
+        public IEnumerable<Category> GetCategories(string searchString)
         {
-            return _context.Categories; 
+            return _context.Categories.Where(x => string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString)); 
         }
     }
 }

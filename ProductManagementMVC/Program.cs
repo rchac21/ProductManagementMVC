@@ -45,7 +45,7 @@ using (var scope = app.Services.CreateScope())
         }
     }
 
-    // Admin User შექმნა
+    // Admin User შექმნა ადმინის იუზერის
     var adminEmail = "admin@gmail.com";
     var adminPassword = "Admin123!";
 

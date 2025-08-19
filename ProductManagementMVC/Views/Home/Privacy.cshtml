@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Privacy Policy";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
+
+@using Microsoft.AspNetCore.Identity
+@using ProductManagementMVC.Areas.Identity.Data
+
+@if (User.Identity.IsAuthenticated)
+{
+    <p>
+        <a id="change-password"
+           asp-area="Identity"
+           asp-page="/Account/Manage/ChangePassword">
+            Change password
+        </a>
+    </p>
+}
+

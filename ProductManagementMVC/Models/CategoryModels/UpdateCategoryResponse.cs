@@ -1,4 +1,4 @@
-﻿namespace ProductManagementMVC.Models
+﻿namespace ProductManagementMVC.Models.CategoryModels
 {
     public class UpdateCategoryResponse
     {

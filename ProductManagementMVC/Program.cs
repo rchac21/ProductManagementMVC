@@ -5,6 +5,9 @@ using ProductManagementMVC.Areas.Identity.Data;
 using ProductManagementMVC.Data;
 using ProductManagementMVC.Interfaces;
 using ProductManagementMVC.Mapping;
+using ProductManagementMVC.Models.CategoryModels;
+using ProductManagementMVC.Models.ProductModels;
+using ProductManagementMVC.Models.OrderModels;
 using ProductManagementMVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +16,13 @@ var connectionString = builder.Configuration.GetConnectionString("ProductManagem
     ?? throw new InvalidOperationException("Connection string 'ProductManagementMVCContextConnection' not found.");
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IMapper<ProductManagementMVC.Entities.Category, ProductManagementMVC.Models.CategoryModel>, CategoryMapper>();
+builder.Services.AddScoped<IMapper<ProductManagementMVC.Entities.Category, CategoryModel>, CategoryMapper>();
+
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IMapper<ProductManagementMVC.Entities.Product, ProductModel>, ProductMapper>();
+
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IMapper<ProductManagementMVC.Entities.Order, OrderModel>, OrderMapper>();
 
 builder.Services.AddDbContext<ProductManagementMVCContext>(options =>
     options.UseSqlServer(connectionString));

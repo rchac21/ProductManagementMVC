@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductManagementMVC.Data;
 
@@ -11,9 +12,11 @@ using ProductManagementMVC.Data;
 namespace ProductManagementMVC.Migrations
 {
     [DbContext(typeof(ProductManagementMVCContext))]
-    partial class ProductManagementMVCContextModelSnapshot : ModelSnapshot
+    [Migration("20250829191922_AddNewFieldUserNameinOrder")]
+    partial class AddNewFieldUserNameinOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -260,26 +263,24 @@ namespace ProductManagementMVC.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("Drink")
-                        .HasColumnType("int");
+                    b.Property<string>("Drink")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Food")
-                        .HasColumnType("int");
+                    b.Property<string>("Food")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Sweet")
-                        .HasColumnType("int");
+                    b.Property<string>("Sweet")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
-
-                    b.HasIndex("Drink");
-
-                    b.HasIndex("Food");
-
-                    b.HasIndex("Sweet");
 
                     b.HasIndex("UserId");
 
@@ -365,32 +366,11 @@ namespace ProductManagementMVC.Migrations
 
             modelBuilder.Entity("ProductManagementMVC.Entities.Order", b =>
                 {
-                    b.HasOne("ProductManagementMVC.Entities.Product", "DrinkNavigation")
-                        .WithMany()
-                        .HasForeignKey("Drink")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ProductManagementMVC.Entities.Product", "FoodNavigation")
-                        .WithMany()
-                        .HasForeignKey("Food")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ProductManagementMVC.Entities.Product", "SweetNavigation")
-                        .WithMany()
-                        .HasForeignKey("Sweet")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("ProductManagementMVC.Areas.Identity.Data.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("DrinkNavigation");
-
-                    b.Navigation("FoodNavigation");
-
-                    b.Navigation("SweetNavigation");
 
                     b.Navigation("User");
                 });

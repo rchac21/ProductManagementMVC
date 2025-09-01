@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductManagementMVC.Data;
 
@@ -11,9 +12,11 @@ using ProductManagementMVC.Data;
 namespace ProductManagementMVC.Migrations
 {
     [DbContext(typeof(ProductManagementMVCContext))]
-    partial class ProductManagementMVCContextModelSnapshot : ModelSnapshot
+    [Migration("20250822102151_InitialCtreateProduct")]
+    partial class InitialCtreateProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,10 +105,12 @@ namespace ProductManagementMVC.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -142,10 +147,12 @@ namespace ProductManagementMVC.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -246,46 +253,6 @@ namespace ProductManagementMVC.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("ProductManagementMVC.Entities.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("Amount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("Drink")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Food")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Sweet")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Drink");
-
-                    b.HasIndex("Food");
-
-                    b.HasIndex("Sweet");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Orders");
-                });
-
             modelBuilder.Entity("ProductManagementMVC.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -302,8 +269,9 @@ namespace ProductManagementMVC.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<string>("Price")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -361,38 +329,6 @@ namespace ProductManagementMVC.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ProductManagementMVC.Entities.Order", b =>
-                {
-                    b.HasOne("ProductManagementMVC.Entities.Product", "DrinkNavigation")
-                        .WithMany()
-                        .HasForeignKey("Drink")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ProductManagementMVC.Entities.Product", "FoodNavigation")
-                        .WithMany()
-                        .HasForeignKey("Food")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ProductManagementMVC.Entities.Product", "SweetNavigation")
-                        .WithMany()
-                        .HasForeignKey("Sweet")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ProductManagementMVC.Areas.Identity.Data.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DrinkNavigation");
-
-                    b.Navigation("FoodNavigation");
-
-                    b.Navigation("SweetNavigation");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ProductManagementMVC.Entities.Product", b =>

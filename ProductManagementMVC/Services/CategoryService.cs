@@ -2,16 +2,16 @@
 using ProductManagementMVC.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using ProductManagementMVC.Mapping;
-using ProductManagementMVC.Models;
 using ProductManagementMVC.Data;
 using ProductManagementMVC.Entities;
+using ProductManagementMVC.Models.CategoryModels;
 
 namespace ProductManagementMVC.Services
 {
     public class CategoryService : ICategoryService
     {
         private readonly ProductManagementMVCContext _context;
-        private readonly IMapper<Entities.Category, CategoryModel> _categoryMapper;
+        private readonly IMapper<Category, CategoryModel> _categoryMapper;
 
         public CategoryService(ProductManagementMVCContext context)
         {
@@ -77,6 +77,11 @@ namespace ProductManagementMVC.Services
         public IEnumerable<Category> GetCategories(string searchString)
         {
             return _context.Categories.Where(x => string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString)); 
+        }
+
+        public List<Category> GetAllCategories()
+        {
+            return _context.Categories.ToList();
         }
     }
 }

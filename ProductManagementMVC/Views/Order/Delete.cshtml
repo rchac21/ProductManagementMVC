@@ -1,0 +1,39 @@
+﻿@model ProductManagementMVC.Models.OrderModels.OrderModel
+
+<form method="post" asp-action="Delete">
+	<input asp-for="Id" hidden />
+	<div class="border p-3 mt-4">
+		<div class="row pb-2">
+			<h2 class="text-primary">Delete Order</h2>
+			<hr />
+		</div>
+		<div class="mb-3">
+			<label asp-for="UserName"></label>
+			<input asp-for="UserName" disabled class="form-control" />
+		</div>
+		<div class="mb-3">
+			<label asp-for="DrinkName"></label>
+			<input asp-for="DrinkName" disabled class="form-control" />
+		</div>
+		<div class="mb-3">
+			<label asp-for="FoodName"></label>
+			<input asp-for="FoodName" disabled class="form-control" />
+		</div>
+		<div class="mb-3">
+			<label asp-for="SweetName"></label>
+			<input asp-for="SweetName" disabled class="form-control" />
+		</div>
+		<div class="mb-3">
+			<label asp-for="Amount"></label>
+			<input asp-for="Amount" disabled class="form-control" />
+		</div>
+		<div class="mb-3">
+			<label asp-for="CreatedDate"></label>
+			<input asp-for="CreatedDate" disabled class="form-control" />
+		</div>
+		<button type="submit" class="btn btn-primary" style="width:150px">Delete</button>
+		<a asp-controller="Order" asp-action="AllOrders" class="btn btn-secondary" style="width:150px">
+			Back To List
+		</a>
+	</div>
+</form>

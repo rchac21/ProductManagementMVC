@@ -1,0 +1,104 @@
+﻿@model IEnumerable<ProductManagementMVC.Entities.Product>
+
+@{
+    ViewData["Title"] = "All Products";
+}
+
+<div class="text-center">
+    <h1 class="display-4">All Products</h1>
+</div>
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Product List</h2>
+        </div>
+        <div class="col-6 text-end">
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-controller="Product" asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Create New Product
+                </a>
+            }
+        </div>
+    </div>
+
+    <form asp-action="AllProducts" method="get">
+        <div class="form-actions no-color">
+            <p>
+                <input type="text" name="SearchString" style="width: 650px; text-align:left"
+                       value="@ViewData["CurrentFilter"]" />
+                <input type="submit" value="Search" class="btn btn-outline-info" />
+                <a asp-action="AllProducts" class="btn btn-secondary">Back To List</a>
+            </p>
+        </div>
+    </form>
+
+    <br /><br />
+
+    <table class="table table-bordered table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Product Price</th>
+                @if (User.IsInRole("Admin"))
+                {
+                    <th></th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var obj in Model)
+            {
+                <tr>
+                    <td width="50%">@obj.Name</td>
+                    <td width="30%">@obj.Price</td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <td>
+                            <div class="w-75 btn-group" role="group">
+                                <a asp-controller="Product" asp-action="Edit" asp-route-id="@obj.Id"
+                                   class="btn btn-primary mx-2">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                                <a asp-controller="Product" asp-action="Delete" asp-route-id="@obj.Id"
+                                   class="btn btn-danger mx-2">
+                                    <i class="bi bi-trash-fill"></i> Delete
+                                </a>
+                            </div>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link"
+                   href="@Url.Action("AllProducts", new { pageNumber = ViewBag.CurrentPage - 1, searchString = ViewData["CurrentFilter"] })">
+                    Previous
+                </a>
+            </li>
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+                    <a class="page-link"
+                       href="@Url.Action("AllProducts", new { pageNumber = i, searchString = ViewData["CurrentFilter"] })">
+                        @i
+                    </a>
+                </li>
+            }
+
+            <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                <a class="page-link"
+                   href="@Url.Action("AllProducts", new { pageNumber = ViewBag.CurrentPage + 1, searchString = ViewData["CurrentFilter"] })">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

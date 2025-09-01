@@ -1,4 +1,7 @@
-﻿namespace ProductManagementMVC.Interfaces
+﻿using ProductManagementMVC.Entities;
+using ProductManagementMVC.Models.OrderModels;
+
+namespace ProductManagementMVC.Interfaces
 {
     public interface IMapper<TEntity, TModel>
     {

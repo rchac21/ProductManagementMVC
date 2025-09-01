@@ -1,0 +1,55 @@
+﻿@model ProductManagementMVC.Models.OrderModels.OrderModel
+
+<form method="post" asp-action="Edit">
+	<div class="border p-3 mt-4">
+		<div class="row pb-2">
+			<h2 class="text-primary">Edit Order</h2>
+			<hr />
+		</div>
+		<input type="hidden" asp-for="UserId" />
+		<div class="mb-3">
+			<label asp-for="UserName"></label>
+			<input asp-for="UserName" class="form-control" readonly/>
+		</div>
+		<!-- Drink Dropdown -->
+		<div class="mb-3">
+			<label asp-for="Drink"></label>
+			<select asp-for="Drink" class="form-control" asp-items="ViewBag.Drinks">
+				<option value="">-- Select Drink --</option>
+			</select>
+			<span asp-validation-for="Drink" class="text-danger"></span>
+		</div>
+
+		<!-- Food Dropdown -->
+		<div class="mb-3">
+			<label asp-for="Food"></label>
+			<select asp-for="Food" class="form-control" asp-items="ViewBag.Foods">
+				<option value="">-- Select Food --</option>
+			</select>
+			<span asp-validation-for="Food" class="text-danger"></span>
+		</div>
+
+		<!-- Sweet Dropdown -->
+		<div class="mb-3">
+			<label asp-for="Sweet"></label>
+			<select asp-for="Sweet" class="form-control" asp-items="ViewBag.Sweets">
+				<option value="">-- Select Sweet --</option>
+			</select>
+			<span asp-validation-for="Sweet" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="Amount"></label>
+			<input asp-for="Amount" class="form-control" />
+			<span asp-validation-for="Amount" class="text-danger"></span>
+		</div>
+		<div class="mb-3">
+			<label asp-for="CreatedDate"></label>
+			<input asp-for="CreatedDate" class="form-control" readonly />
+			<span asp-validation-for="CreatedDate" class="text-danger"></span>
+		</div>
+		<button type="submit" class="btn btn-primary" style="width:150px">Update</button>
+		<a asp-controller="Order" asp-action="AllOrders" class="btn btn-secondary" style="width:150px">
+			Back To List
+		</a>
+	</div>
+</form>

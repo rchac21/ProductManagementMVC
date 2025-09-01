@@ -1,33 +1,33 @@
 ﻿using ProductManagementMVC.Interfaces;
+using ProductManagementMVC.Models.ProductModels;
 using ProductManagementMVC.Entities;
-using ProductManagementMVC.Models.CategoryModels;
 
 namespace ProductManagementMVC.Mapping
 {
-    public class CategoryMapper : IMapper<Category, CategoryModel>
+    public class ProductMapper : IMapper<Product, ProductModel>
     {
-        public CategoryModel MapFromEntityToModel(Category source) => new CategoryModel
+        public ProductModel MapFromEntityToModel(Product source) => new ProductModel
         {
-            Name = source.Name,
-            Description = source.Description,
-            Code = source.Code,
             Id = source.Id,
+            Name = source.Name,
+            Price = source.Price,
+            CategoryId = source.CategoryId,
         };
 
-        public Category MapFromModelToEntity(CategoryModel source)
+        public Product MapFromModelToEntity(ProductModel source)
         {
-            var entity = new Category();
+            var entity = new Product();
 
             MapFromModelToEntity(source, entity);
 
             return entity;
         }
 
-        public void MapFromModelToEntity(CategoryModel source, Category target)
+        public void MapFromModelToEntity(ProductModel source, Product target)
         {
             target.Name = source.Name;
-            target.Description = source.Description;
-            target.Code = source.Code;
+            target.Price = source.Price;
+            target.CategoryId = source.CategoryId;
             target.Id = source.Id;
         }
 

@@ -5,6 +5,7 @@ using ProductManagementMVC.Entities;
 using ProductManagementMVC.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using ProductManagementMVC.Models.CategoryModels;
 
 namespace ProductManagementMVC.Controllers
 {

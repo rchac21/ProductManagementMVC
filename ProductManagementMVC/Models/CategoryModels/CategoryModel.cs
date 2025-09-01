@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ProductManagementMVC.Models
+namespace ProductManagementMVC.Models.CategoryModels
 {
     public class CategoryModel
     {

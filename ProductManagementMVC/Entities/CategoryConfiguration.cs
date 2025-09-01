@@ -2,13 +2,19 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProductManagementMVC.Entities;
 
-namespace ProductManagementMVC.Entity
+public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
-    public class CategoryConfiguration : IEntityTypeConfiguration<Category>
+    public void Configure(EntityTypeBuilder<Category> builder)
     {
-        public void Configure(EntityTypeBuilder<Category> builder)
-        {
-            builder.HasKey(e => e.Id);
-        }
+        builder.HasKey(c => c.Id);
+
+        builder.Property(c => c.Name)
+               .IsRequired()
+               .HasMaxLength(100);
+
+        // ერთი Category -> ბევრი Product
+        builder.HasMany(c => c.Products)
+               .WithOne(p => p.Category)
+               .HasForeignKey(p => p.CategoryId);
     }
 }

@@ -1,0 +1,32 @@
+﻿@model ProductManagementMVC.Models.OrderModels.OrderModel
+
+@{
+    ViewData["Title"] = "Make an Order";
+}
+
+<h2>Make an Order</h2>
+
+<form asp-action="ClientOrder" method="post">
+    <div class="form-group">
+        <label>Drink</label>
+        <select asp-for="Drink" asp-items="Model.Drinks" class="form-control">
+            <option value="">-- Select Drink --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Food</label>
+        <select asp-for="Food" asp-items="Model.Foods" class="form-control">
+            <option value="">-- Select Food --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Sweet</label>
+        <select asp-for="Sweet" asp-items="Model.Sweets" class="form-control">
+            <option value="">-- Select Sweet --</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Buy</button>
+</form>

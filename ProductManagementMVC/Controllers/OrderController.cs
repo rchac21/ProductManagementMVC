@@ -8,6 +8,10 @@ using ProductManagementMVC.Models.OrderModels;
 using ProductManagementMVC.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProductManagementMVC.Mapping;
+using Microsoft.AspNetCore.Identity;
+using SendGrid.Helpers.Mail;
+using EllipticCurve.Utils;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ProductManagementMVC.Controllers
 {
@@ -22,35 +26,125 @@ namespace ProductManagementMVC.Controllers
             _orderMapper = new OrderMapper();
         }
 
-        //public IActionResult AllOrders(string currentFilter, string searchString, int pageNumber = 1, int pageSize = 5)
-        //{
-        //    if (!string.IsNullOrEmpty(searchString))
-        //    {
-        //        pageNumber = 1;
-        //    }
-        //    else
-        //    {
-        //        searchString = currentFilter;
-        //    }
+        public IActionResult OrderSuccess()
+        {
+            ViewBag.Message = TempData["SuccessMessage"];
+            return View();
+        }
 
-        //    ViewData["CurrentFilter"] = searchString;
 
-        //    // სერვისიდან მონაცემების წამოღება
-        //    var orders = _orderService.GetOrders(searchString);
+        // GET: Client form
+        [HttpGet]
+        public IActionResult ClientOrder()
+        {
+            var products = _orderService.GetProductList();
 
-        //    var totalCount = orders.Count();
+            var model = new OrderModel
+            {
+                Drinks = products
+                    .Where(p => p.Category.Name == "drink")
+                    .Select(p => new SelectListItem
+                    {
+                        Value = p.Id.ToString(),
+                        Text = $"{p.Name} - {p.Price} GEL"
+                    }).ToList(),
 
-        //    var items = orders
-        //        .OrderBy(c => c.Id)
-        //        .Skip((pageNumber - 1) * pageSize)
-        //        .Take(pageSize)
-        //        .ToList();
+                 Foods = products
+                    .Where(p => p.Category.Name == "food")
+                    .Select(p => new SelectListItem
+                    {
+                        Value = p.Id.ToString(),
+                        Text = $"{p.Name} - {p.Price} GEL"
+                    }).ToList(),
 
-        //    ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-        //    ViewBag.CurrentPage = pageNumber;
+                 Sweets = products
+                    .Where(p => p.Category.Name == "sweet")
+                    .Select(p => new SelectListItem
+                    {
+                        Value = p.Id.ToString(),
+                        Text = $"{p.Name} - {p.Price} GEL"
+                    }).ToList()
+            };
 
-        //    return View(items);
-        //}
+            return View(model);
+        }
+
+        // POST: Buy action
+        [HttpPost]
+        public async Task<IActionResult> ClientOrder(OrderModel model)
+        {
+            var user = await _orderService.GetLoggedUser();
+            model.UserId = user.Id;
+
+            // წაშალე UserId–ის error–ები
+            ModelState.Remove("UserId");
+
+            // ModelState–ში ხელით ჩასმა
+            //ModelState.SetModelValue("UserId", new ValueProviderResult(model.UserId));
+            if (!ModelState.IsValid)
+            {
+                var products = _orderService.GetProductList();
+
+                model = new OrderModel
+                {
+                    Drinks = products
+                        .Where(p => p.Category.Name == "drink")
+                        .Select(p => new SelectListItem
+                        {
+                            Value = p.Id.ToString(),
+                            Text = $"{p.Name} - {p.Price} GEL"
+                        }).ToList(),
+
+                    Foods = products
+                        .Where(p => p.Category.Name == "food")
+                        .Select(p => new SelectListItem
+                        {
+                            Value = p.Id.ToString(),
+                            Text = $"{p.Name} - {p.Price} GEL"
+                        }).ToList(),
+
+                    Sweets = products
+                        .Where(p => p.Category.Name == "sweet")
+                        .Select(p => new SelectListItem
+                        {
+                            Value = p.Id.ToString(),
+                            Text = $"{p.Name} - {p.Price} GEL"
+                        }).ToList()
+                };
+                return View(model);
+            }
+
+            // ამოიღე არჩეული პროდუქტები
+            var selectedProducts = _orderService.GetChooseProduct(model);
+
+            // დათვალე ჯამი
+            var totalAmount = selectedProducts.Sum(p => p.Price);
+
+            // ამოიღე დალოგინებული იუზერი
+            //var user = await _orderService.GetLoggedUser();
+
+            //model.UserId = user.Id;
+            model.Amount = totalAmount;
+
+            var response = _orderService.CreateOrder(model);
+
+            // ახალი Order
+            //var order = new Order
+            //{
+            //    UserId = user.Id,
+            //    Drink = model.Drink,
+            //    Food = model.Food,
+            //    Sweet = model.Sweet,
+            //    Amount = totalAmount,
+            //    CreatedDate = DateTime.Now
+            //};
+
+            //_context.Orders.Add(order);
+            //await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "თქვენი შეკვეთა მიღებულია ✅";
+            return RedirectToAction("OrderSuccess");
+            //return RedirectToAction("AllOrders");
+        }
 
         public IActionResult AllOrders(string currentFilter, string searchString, int pageNumber = 1, int pageSize = 5)
         {
@@ -78,7 +172,34 @@ namespace ProductManagementMVC.Controllers
             return View(items);
         }
 
+        public async Task<IActionResult> MyOrders(string currentFilter, string searchString, int pageNumber = 1, int pageSize = 5)
+        {
+            if (!string.IsNullOrEmpty(searchString))
+                pageNumber = 1;
+            else
+                searchString = currentFilter;
 
+            ViewData["CurrentFilter"] = searchString;
+
+            var user = await _orderService.GetLoggedUser();
+            var UserId = user.Id;
+
+            var orders = _orderService.GetOrderByUserId(searchString, UserId);
+
+            var orderModels = orders.Select(o => _orderMapper.MapFromEntityToModel(o)).ToList();
+
+            var totalCount = orderModels.Count();
+            var items = orderModels
+                .OrderBy(c => c.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            ViewBag.CurrentPage = pageNumber;
+
+            return View(items);
+        }
 
         public IActionResult Create()
         {
@@ -96,10 +217,10 @@ namespace ProductManagementMVC.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult Create(OrderModel order)
         {
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            {
-                Console.WriteLine(error.ErrorMessage);
-            }
+            //foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            //{
+            //    Console.WriteLine(error.ErrorMessage);
+            //}
 
             if (ModelState.IsValid)
             {

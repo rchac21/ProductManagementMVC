@@ -5,6 +5,7 @@ using ProductManagementMVC.Areas.Identity.Data;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ProductManagementMVC.Models.OrderModels
 {
@@ -13,7 +14,8 @@ namespace ProductManagementMVC.Models.OrderModels
         public int Id { get; set; }
 
         // FK to AspNetUsers
-        [Required(ErrorMessage = "Please select a user.")]
+        //[Required(ErrorMessage = "Please select a user.")]
+        [BindNever]
         public string UserId { get; set; }
 
         // Navigation property
@@ -23,7 +25,7 @@ namespace ProductManagementMVC.Models.OrderModels
         public int? Drink { get; set; }
         public int? Food { get; set; }
         public int? Sweet { get; set; }
-        public int? Amount { get; set; }
+        public double? Amount { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         // გამოტანითი ველები (UI)
         public string? DrinkName { get; set; }
@@ -31,9 +33,9 @@ namespace ProductManagementMVC.Models.OrderModels
         public string? SweetName { get; set; }
 
         // Dropdown სიისთვის (enum-ის მაგივრად)
-        //public IEnumerable<SelectListItem>? Drinks { get; set; }
-        //public IEnumerable<SelectListItem>? Foods { get; set; }
-        //public IEnumerable<SelectListItem>? Sweets { get; set; }
+        public IEnumerable<SelectListItem>? Drinks { get; set; }
+        public IEnumerable<SelectListItem>? Foods { get; set; }
+        public IEnumerable<SelectListItem>? Sweets { get; set; }
         // Computed property
         public string? UserName => User?.UserName;
     }

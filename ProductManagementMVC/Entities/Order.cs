@@ -25,7 +25,7 @@ namespace ProductManagementMVC.Entities
 
         [ForeignKey("Sweet")]
         public virtual Product SweetNavigation { get; set; }
-        public int? Amount { get; set; }
+        public double? Amount { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

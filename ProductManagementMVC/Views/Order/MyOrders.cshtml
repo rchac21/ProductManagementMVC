@@ -1,0 +1,83 @@
+﻿@model IEnumerable<ProductManagementMVC.Models.OrderModels.OrderModel>
+
+@{
+    ViewData["Title"] = "My Orders";
+}
+
+<div class="text-center">
+    <h1 class="display-4">My Orders</h1>
+</div>
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Order List</h2>
+        </div>
+    </div>
+
+    <form asp-action="MyOrders" method="get">
+        <div class="form-actions no-color">
+            <p>
+                <input type="text" name="SearchString" style="width: 650px; text-align:left"
+                       value="@ViewData["CurrentFilter"]" />
+                <input type="submit" value="Search" class="btn btn-outline-info" />
+                <a asp-action="MyOrders" class="btn btn-secondary">Back To List</a>
+            </p>
+        </div>
+    </form>
+
+    <br /><br />
+
+    <table class="table table-bordered table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>Food</th>
+                <th>Drink</th>
+                <th>Sweet</th>
+                <th>Amount</th>
+                <th>Create Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var obj in Model)
+            {
+                <tr>
+                    <td width="30%">@obj.FoodName</td> <!-- FoodName -->
+                    <td width="50%">@obj.DrinkName</td> <!-- DrinkName -->
+                    <td width="30%">@obj.SweetName</td> <!-- SweetName -->
+                    <td width="50%">@obj.Amount</td>
+                    <td width="30%">@obj.CreatedDate.ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link"
+                   href="@Url.Action("MyOrders", new { pageNumber = ViewBag.CurrentPage - 1, searchString = ViewData["CurrentFilter"] })">
+                    Previous
+                </a>
+            </li>
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+                    <a class="page-link"
+                       href="@Url.Action("MyOrders", new { pageNumber = i, searchString = ViewData["CurrentFilter"] })">
+                        @i
+                    </a>
+                </li>
+            }
+
+            <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                <a class="page-link"
+                   href="@Url.Action("MyOrders", new { pageNumber = ViewBag.CurrentPage + 1, searchString = ViewData["CurrentFilter"] })">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

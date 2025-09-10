@@ -1,5 +1,6 @@
 ﻿
-using Microsoft.AspNetCore.Mvc;using ProductManagementMVC.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using ProductManagementMVC.Interfaces;
 using ProductManagementMVC.Entities;
 using ProductManagementMVC.Models;
 using Microsoft.EntityFrameworkCore;
